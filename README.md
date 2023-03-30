@@ -24,7 +24,7 @@ module.exports = defineConfig({
 Now the package is ready to use in your project. You can use either with `e2e` testing or with `component testing`.
 
 - ##### End-to-End Testing `e2e`
-Under your `setupNodeEvents` method, call cypress API `on("after: run", () => { })` and call the method with return `postResult()` with three mandatory arguments like `postResult('userToken', 'projectId', 'path to report')` as mentioned in the code snippet.
+Under your `setupNodeEvents` method, call cypress API `on("after: run", () => { })` and call the method with return `postResult()` with three mandatory arguments like `postResult('userToken', 'projectId', 'path/to/report')` as mentioned in the code snippet.
 
 ```
 const { postResult } = require("kualitee_cypress");
@@ -34,7 +34,7 @@ module.exports = defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
       on("after:run", () => {
-        return postResult(userToken, projectId, path to report);
+        return postResult(userToken, projectId, path/to/report);
       });
     },
   },
@@ -51,7 +51,7 @@ module.exports = defineConfig({
   component: {
     setupNodeEvents(on, config) {
       on("after:run", () => {
-        return postResult(userToken, projectId, path to report);
+        return postResult(userToken, projectId, path/to/report);
       });
     },
   },
