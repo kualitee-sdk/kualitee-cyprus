@@ -1,0 +1,53 @@
+{
+  "name": "kualitee_cypress",
+  "version": "0.0.0",
+  "description": "This package is for kualitee users to post their execution cycle from cypress to kualitee tool",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/esm/types/index.d.ts",
+        "default": "./lib/esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/cjs/types/index.d.ts",
+        "default": "./lib/cjs/index.js"
+      }
+    }
+  },
+  "types": "./lib/cjs/types/index.d.ts",
+  "main": "./lib/cjs/index.js",
+  "files": [
+    "lib/**/*"
+  ],
+  "scripts": {
+    "clean": "rm -rf ./lib",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p ./configs/tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
+    "build:cjs": "tsc -p ./configs/tsconfig.cjs.json",
+    "prepack": "npm run build"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "kualitee",
+    "kualitee_cypress"
+  ],
+  "author": "kualitee team",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "@types/axios": "^0.14.0",
+    "axios": "^1.3.4",
+    "form-data": "^4.0.0",
+    "ts-node": "^10.9.1"
+  }
+}
