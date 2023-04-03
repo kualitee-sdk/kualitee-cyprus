@@ -2,10 +2,16 @@ import * as fs from 'fs';
 import * as path from 'path';
 import FormData from 'form-data'
 import axios from 'axios';
+const kualiteeJson = require(`${process.cwd()}/package.json`);
 
 const endPoint = 'https://apiss.kualiteestaging.com/api/v2/test_case/automation_testcase_report_execution'
 
-function readCucumberJsonDirectory(user_token: string, project_id: string, directoryPath: string): Promise<any[]> {
+function readCucumberJsonDirectory(): Promise<any[]> {
+
+  const user_token = kualiteeJson.kualiteeOptions.token;
+  const project_id = kualiteeJson.kualiteeOptions.projectId;
+  const directoryPath = kualiteeJson.kualiteeOptions.reportPath;
+  
   const promises: Promise<any>[] = [];
   const files = fs.readdirSync(directoryPath);
   files.forEach(file => {
@@ -26,17 +32,15 @@ function readCucumberJsonDirectory(user_token: string, project_id: string, direc
           'content-type': 'multipart/form-data'
         }
       });
-      if(type !== 'cucumber') {
         promises.push(promise);
-      }
     }
   });
   return Promise.all(promises);
 }
 
-export const postResult = async (user_token: string, project_id: string, dir_path: string) => {
+export const postResult = async () => {
   try {
-    return await readCucumberJsonDirectory(user_token, project_id, dir_path).then((response) => {
+    return await readCucumberJsonDirectory().then((response) => {
       if(response.length && response.length > 0) {
         const responseObject = response[0].data;
         console.log('\x1b[32m%s\x1b[0m',`${responseObject.message} on Kualitee Tool`);
