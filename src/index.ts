@@ -8,10 +8,10 @@ const endPoint = 'https://apiss.kualiteestaging.com/api/v2/test_case/automation_
 
 function readCucumberJsonDirectory(): Promise<any[]> {
 
-  const user_token = kualiteeJson.kualiteeOptions.token;
-  const project_id = kualiteeJson.kualiteeOptions.projectId;
-  const directoryPath = kualiteeJson.kualiteeOptions.reportPath;
-  
+  const user_token = kualiteeJson.kualiteeConfigs.token;
+  const project_id = kualiteeJson.kualiteeConfigs.projectId;
+  const directoryPath = kualiteeJson.kualiteeConfigs.reportPath;
+
   const promises: Promise<any>[] = [];
   const files = fs.readdirSync(directoryPath);
   files.forEach(file => {
