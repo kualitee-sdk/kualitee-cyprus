@@ -1,6 +1,6 @@
 {
   "name": "kualitee_cypress",
-  "version": "0.1.2-beta",
+  "version": "0.1.3-beta",
   "description": "This package is for kualitee users to post their execution cycle from cypress to kualitee tool",
   "exports": {
     ".": {
