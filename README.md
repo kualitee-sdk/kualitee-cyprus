@@ -30,7 +30,7 @@ npm install kualitee_cypress
 `import` or `require` (as your project demand) the `postResult` method in `cypress.config.js`.
 
 ```
-const { postResult } = require("kualitee_cypress");
+const { postReport } = require("kualitee_cypress");
 
 module.exports = defineConfig({
   //implement testing logics here
@@ -44,14 +44,14 @@ Now the package is ready to use in your project. You can use either with `e2e` t
 Under your `setupNodeEvents` method, call cypress API `on("after: run", () => { })` and call the method with return `postResult()`.
 
 ```
-const { postResult } = require("kualitee_cypress");
+const { postReport } = require("kualitee_cypress");
 
 module.exports = defineConfig({
 
   e2e: {
     setupNodeEvents(on, config) {
       on("after:run", () => {
-        return postResult();
+        return postReport();
       });
     },
   },
@@ -61,14 +61,14 @@ After configuration `run the cypress` in terminal (`npx cypress run`) or your cu
 
 - #### Component Testing
 ```
-const { postResult } = require("kualitee_cypress");
+const { postReport } = require("kualitee_cypress");
 
 module.exports = defineConfig({
 
   component: {
     setupNodeEvents(on, config) {
       on("after:run", () => {
-        return postResult(userToken, projectId, path/to/report);
+        return postReport();
       });
     },
   },
@@ -79,6 +79,5 @@ After configuration `run the cypress` in terminal (`npx cypress run --component`
 ### Outputs
 On completion of cypress run, you will get the `Successfull` or `Error` message in terminal.
 
-![kualitee_cypress](https://user-images.githubusercontent.com/48677205/228813255-e8f3c0a7-2f41-4743-a333-22b672a0541a.png)
-
+![Screenshot from 2023-04-06 11-28-07](https://user-images.githubusercontent.com/48677205/230292569-ad41b583-8492-477e-a445-3cea514c1293.png)
 
