@@ -2,8 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import FormData from 'form-data'
 import axios from 'axios';
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
+
 
 const endPoint = 'https://apiss.kualiteestaging.com/api/v2/test_case/automation_testcase_report_execution'
 
@@ -45,7 +44,8 @@ function readReportDirectory(user_token: string, project_id: string, directoryPa
 
 export const postReport = async () => {
   try {
-    const kualiteeJson = require(`${process.cwd()}/package.json`);
+    const fileContent = fs.readFileSync(`${process.cwd()}/package.json`, 'utf8');
+    const kualiteeJson = JSON.parse(fileContent);
     const user_token = kualiteeJson.kualiteeConfigs.token;
     const project_id = kualiteeJson.kualiteeConfigs.projectId;
     const directoryPath = kualiteeJson.kualiteeConfigs.reportPath;
