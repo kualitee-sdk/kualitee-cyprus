@@ -204,8 +204,22 @@ export const executeTestCase = (req: Request, res: Response, reportPath: string)
 
             try {
               await Promise.all(promises);
+              console.log(
+                '\x1b[32m%s\x1b[0m',
+                `\n
+          <=====================================================================================>
+            Status updated on kualitee
+          <=====================================================================================>\n`
+              );
               onCloseResponse.status(200).send({ status: true, message: `Test case with TAG ${body.tc_tags} executed successfully. ` });
             } catch (error: any) {
+              console.log(
+                '\x1b[32m%s\x1b[0m',
+                `\n
+                <=====================================================================================>
+                ${error.response.data.errors}, error occured while updating status on Kualitee Tool
+                <=====================================================================================>\n`
+              );
               onCloseResponse.status(400).send({ status: false, message: error.message });
             }
           });
