@@ -97,18 +97,18 @@ First, you need to Integrate Kualitee with Cypress, This integration involves co
 
 **Prerequisites**
 - Installed `kualitee_cypress` in your Cypress project.
-- Cypress using [Cucumber](https://cucumber.io/) and writing the test scenarios in BDD format.
+- [Cypress](https://www.cypress.io/) must have a [Cucumber](https://cucumber.io/) integeration.
+- Scenerios must be written in bdd format
 - Able to run a single _scenario_ by using _tag_ in cypress.
 - You need to add a unique tag for both **Feature** and **Scenario**. It is mandatory.  
 
 ### Step 1: Add tags
-You need to add a unique tag for both _feature_ and _scenario_ with __@kts__ or __@ktc__. If you want to add tag **@login** for _feature_ then you will have
-to add prefix like `@kts_login` and if you want to add tag **@success_login** for _scenario_ then you have to add the tag like `@ktc_success_login`.This step is mandatory for the _scenario_ or _feature_ which you want to execute and get status on Kualitee.
+You need to add a unique tag for both _feature_ and _scenario_ with a prefix __@kts___ and __@ktc___ respectively. For example `@kts_login` instead of **@login** for a _feature_ and for _scenario_ add tag like `@ktc_success_login` instead of using only **@success_login** and these should be the same as in Kualitee.
 ### Step 2: Host your cypress project on a server
 This is mandatory to host your cypress project on the server by which you can run your *scenarios* from Kualitee by *tags*.
 
 ### Step 3: Set up an express server
-Set up an express server and expose an API. Following is the example of an express server you can use it as template.
+Set up a server and expose an API. Following is the example of an express server you can use it as template.
 
 ```
 const express = require('express')
@@ -135,7 +135,7 @@ If you are working in _CommonJS_ environment then include in server file like
 ```
 const {executeTestCase} = require("kualitee_cypress")
 ```
-If you are working in _ES6 (ECMAScript 2015) module system_ the include in server file like
+If you are working in _ES6 (ECMAScript 2015) module system_ then include in server file like
 ```
 import { executeTestCase } from 'kualitee_cypress';
 ```
