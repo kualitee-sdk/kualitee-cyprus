@@ -6,9 +6,9 @@ This package is for [Kualitee](https://www.kualitee.com/) users.
 * Integration kualitee with cypress, execute the scenario from kualitee and map the status if you are using cucumber in cypress.
 
 ## Table of Contents
-- [Installation](#install-kualitee_cypress)
+- [Installation](#npm)
 - [Post report to Kualitee](#post-report-to-kualitee)
-- [Map test case status on Kualitee](#map-test-case-status-on-kualitee)
+- [Execute scenario from kualitee and map the results](#execute-scenario-from-kualitee-and-map-the-results)
 
 
 ## Install `kualitee_cypress` :
@@ -90,9 +90,9 @@ After configuration `run the cypress` in terminal (`npx cypress run --component`
 ### Outputs
 On completion of cypress run, you will get the `Successfull` or `Error` message in terminal.
 
-![Screenshot from 2023-04-06 11-28-07](https://user-images.githubusercontent.com/48677205/230292569-ad41b583-8492-477e-a445-3cea514c1293.png)
+![Screenshot from 2023-04-27 09-49-28](https://user-images.githubusercontent.com/48677205/234762673-e87ad03c-28dc-4f67-a089-6e3ff5df940f.png)
 
-## Map Test Case Status on Kualitee
+## Execute scenario from kualitee and map the results
 First, you need to Integrate Kualitee with Cypress, This integration involves configuring Kualitee to run Cypress tests and receive results. So, you need to follow these steps.
 
 **Prerequisites**
