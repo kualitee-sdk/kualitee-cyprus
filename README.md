@@ -100,7 +100,7 @@ First, you need to Integrate Kualitee with Cypress, This integration involves co
 - [Cypress](https://www.cypress.io/) must have a [Cucumber](https://cucumber.io/) integeration.
 - Scenerios must be written in bdd format
 - Able to run a single _scenario_ by using _tag_ in cypress.
-- You need to add a unique tag for both **Feature** and **Scenario**. It is mandatory.  
+- You need to add a unique tag for both **Feature**`(test scenario in kualitee)` and **Scenario**`(test case in kualitee)`.  
 
 ### Step 1: Add tags
 You need to add a unique tag for both _feature_ and _scenario_ with a prefix __@kts___ and __@ktc___ respectively. For example `@kts_login` instead of **@login** for a _feature_ and for _scenario_ add tag like `@ktc_success_login` instead of using only **@success_login** and these should be the same as in Kualitee.
