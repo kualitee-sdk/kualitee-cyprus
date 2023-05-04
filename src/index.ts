@@ -99,26 +99,26 @@ export const postReport = async () => {
         console.log(
           '\x1b[32m%s\x1b[0m',
           `\n
-  <=====================================================================================>
-    ${responseObject.message} on Kualitee Tool
-  <=====================================================================================>\n`
+                <=====================================================================================>
+                          ${responseObject.message} on Kualitee Tool
+                <=====================================================================================>\n`
         );
         return;
       }
       console.log(
         '\x1b[32m%s\x1b[0m',
         `\n
-  <=====================================================================================>
-    Report generated Successfully on Kualitee Tool
-  <=====================================================================================>\n`
+                <=====================================================================================>
+                            Report generated Successfully on Kualitee Tool
+                <=====================================================================================>\n`
       );
     }).catch((error) => {
       console.log(
         '\x1b[41m\x1b[37m%s\x1b[0m',
         `\n
-<=====================================================================================>
-${error.response.data.errors}, Report cannot be generated on Kualitee Tool
-<=====================================================================================>\n`
+                <=====================================================================================>
+                        ${error.response.data.errors}, Report cannot be generated on Kualitee Tool
+                <=====================================================================================>\n`
       );
     });
   } catch (error) {
@@ -134,26 +134,26 @@ export const postResult = async (user_token: string, project_id: string, directo
         console.log(
           '\x1b[32m%s\x1b[0m',
           `\n
-  <=====================================================================================>
-    ${responseObject.message} on Kualitee Tool
-  <=====================================================================================>\n`
+                <=====================================================================================>
+                                 ${responseObject.message} on Kualitee Tool
+                <=====================================================================================>\n`
         );
         return;
       }
       console.log(
         '\x1b[32m%s\x1b[0m',
         `\n
-  <=====================================================================================>
-    Report generated Successfully on Kualitee Tool
-  <=====================================================================================>\n`
+                <=====================================================================================>
+                                Report generated Successfully on Kualitee Tool
+                <=====================================================================================>\n`
       );
     }).catch((error) => {
       console.log(
-        '\x1b[32m%s\x1b[0m',
+        '\x1b[41m\x1b[37m%s\x1b[0m',
         `\n
-        <=====================================================================================>
-        ${error.response.data.errors}, Report cannot be generated on Kualitee Tool
-        <=====================================================================================>\n`
+                <=====================================================================================>
+                    ${error.response.data.errors}, Report cannot be generated on Kualitee Tool
+                <=====================================================================================>\n`
       );
     });
   } catch (error) {
@@ -207,20 +207,20 @@ export const executeTestCase = (req: Request, res: Response, reportPath: string)
               console.log(
                 '\x1b[32m%s\x1b[0m',
                 `\n
-          <=====================================================================================>
-            Status updated on kualitee
-          <=====================================================================================>\n`
+                <=====================================================================================>
+                                            Status updated on kualitee
+                <=====================================================================================>\n`
               );
               onCloseResponse.status(200).send({ status: true, message: `Test case with TAG ${body.tc_tags} executed successfully. ` });
             } catch (error: any) {
               console.log(
-                '\x1b[32m%s\x1b[0m',
+                '\x1b[41m\x1b[37m%s\x1b[0m',
                 `\n
                 <=====================================================================================>
-                ${error.response.data.errors}, error occured while updating status on Kualitee Tool
+                ${JSON.stringify(error.response.data.errors)}, error occured while updating status on Kualitee Tool
                 <=====================================================================================>\n`
               );
-              onCloseResponse.status(400).send({ status: false, message: error.message });
+            onCloseResponse.status(400).send({ status: false, message: error.response.data.errors });
             }
           });
         }

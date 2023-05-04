@@ -98,7 +98,7 @@ First, you need to Integrate Kualitee with Cypress, This integration involves co
 **Prerequisites**
 - Installed `kualitee_cypress` in your Cypress project.
 - [Cypress](https://www.cypress.io/) must have a [Cucumber](https://cucumber.io/) integeration.
-- Scenerios must be written in bdd format
+- Scenerios must be written in BDD format
 - Able to run a single _scenario_ by using _tag_ in cypress.
 - You need to add a unique tag for both **Feature**`(test scenario in kualitee)` and **Scenario**`(test case in kualitee)`.  
 
@@ -146,15 +146,15 @@ with three arguments.
 
 ```
 app.post('/script-run', (req, res) => {
-  executeTestCase(req, res, 'cypress/e2e/reports')
+  executeTestCase(req, res, 'path/to/report')
 });
 ```
 #### Arguments
-**req**: It is the reqest body and it will pass as it is *req*.
+**req**: It is the request body and it will pass as it is *req*.
 
 **res**: It is the response body and it will pass as it is *res*.
 
-**reportPath**: _string_ The path in the cypress project where reports generate like `cypress/e2e/reports`.
+**path/to/report**: _string_ The path in the cypress project where reports generate like `cypress/e2e/reports`.
 Now you can execute the _Scenario_ from Kualitee tool.
 
 
