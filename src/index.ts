@@ -194,7 +194,7 @@ export const executeTestCase = (req: Request, res: Response, reportPath: string)
 
           // log Cypress errors to console
           cypress.stderr.on('data', (error) => {
-            response.send(error)
+            console.log(error.toString());
           });
 
           cypress.on('close', async (code) => {
