@@ -60,9 +60,10 @@ function updateStatusOnKualitee(reportPath: string, body: any) {
       if (fs.statSync(filePath).isFile() && splitFile.includes('cucumber') && path.extname(filePath) === '.json') {
         const fileForm = new FormData();
         fileForm.append('token', body.token);
-        fileForm.append('project_id', body.project_id)
-        fileForm.append('execute', body.execute)
-        fileForm.append('cycle_id', body.cycle_id)
+        fileForm.append('project_id', body.project_id);
+        fileForm.append('execute', body.execute);
+        fileForm.append('cycle_id', body.cycle_id);
+        fileForm.append('build_id', body.build_id);
         body.tc_ids.forEach((id: any) => {
           fileForm.append('tc_ids[]', id);
         });
