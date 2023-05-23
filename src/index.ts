@@ -185,7 +185,7 @@ export const executeTestCase = (req: Request, res: Response, reportPath: string)
           }
 
           const cypressArgs = ['cypress', 'run', '--env', `TAGS="${tag}"`];
-          const cypress = spawn('npx', cypressArgs);
+          const cypress = spawn(/^win/.test(process.platform) ? 'npx.cmd' : 'npx', cypressArgs);
 
           // log Cypress output to console
           cypress.stdout.on('data', (data) => {
@@ -195,7 +195,6 @@ export const executeTestCase = (req: Request, res: Response, reportPath: string)
           // log Cypress errors to console
           cypress.stderr.on('data', (error) => {
             response.send(error)
-            process.exit(1);
           });
 
           cypress.on('close', async (code) => {
