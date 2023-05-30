@@ -48,7 +48,8 @@ function readReportDirectory(user_token: string, project_id: string, directoryPa
 }
 
 function updateStatusOnKualitee(reportPath: string, body: any) {
-  const endPoint = 'https://apiss.kualiteestaging.com/api/v2/test_case_execution/execute_automatic';
+  let base_url = body.base_URL;
+  const endPoint = `${base_url}test_case_execution/execute_automatic`;
   const promises: Promise<any>[] = [];
 
   const files = fs.readdirSync(reportPath);
