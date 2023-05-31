@@ -11,7 +11,7 @@ import { Request, Response } from 'express';
 
 
 function readReportDirectory(user_token: string, project_id: string, directoryPath: string): Promise<any[]> {
-  const endPoint = 'https://apiss.kualiteestaging.com/api/v2/test_case/automation_testcase_report_execution'
+  const endPoint = 'https://apiss.kualitee.com/api/v2/test_case/automation_testcase_report_execution'
 
   try {
     const promises: Promise<any>[] = [];
@@ -95,6 +95,7 @@ export const postReport = async () => {
     const user_token = kualiteeJson.kualiteeConfigs.token;
     const project_id = kualiteeJson.kualiteeConfigs.projectId;
     const directoryPath = kualiteeJson.kualiteeConfigs.reportPath;
+
     return await readReportDirectory(user_token, project_id, directoryPath).then((response) => {
       if (response.length && response.length > 0) {
         const responseObject = response[0].data;
