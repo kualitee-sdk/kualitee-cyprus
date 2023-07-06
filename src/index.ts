@@ -50,41 +50,44 @@ function readReportDirectory(user_token: string, project_id: string, directoryPa
 function updateStatusOnKualitee(reportPath: string, body: any) {
   let base_url = body.base_URL;
   const endPoint = `${base_url}test_case_execution/execute_automatic`;
+  const files = fs.readdirSync(reportPath);
+
   const promises: Promise<any>[] = [];
 
-  const files = fs.readdirSync(reportPath);
-  files.forEach(file => {
-    const filePath = path.join(reportPath, file);
-    const splitFile = file.split('.');
+  for (let i = 0; i < body.tc_tags.length; i++) {
+    files.forEach(file => {
+      const filePath = path.join(reportPath, file);
 
-    try {
-      if (fs.statSync(filePath).isFile() && splitFile.includes('cucumber') && path.extname(filePath) === '.json') {
-        const fileForm = new FormData();
-        fileForm.append('token', body.token);
-        fileForm.append('project_id', body.project_id);
-        fileForm.append('execute', body.execute);
-        fileForm.append('cycle_id', body.cycle_id);
-        fileForm.append('build_id', body.build_id);
-        body.tc_ids.forEach((id: any) => {
-          fileForm.append('tc_ids[]', id);
-        });
-        body.tc_tags.forEach((tag: any) => {
-          fileForm.append('tc_tags[]', tag);
-        });
-        fileForm.append('report', fs.createReadStream(filePath));
-        const promise = axios.post(endPoint, fileForm, {
-          headers: {
-            'content-type': 'multipart/form-data'
+      try {
+        if (fs.statSync(filePath).isFile() && file.endsWith('cucumber.json')) {
+          const fileContent = fs.readFileSync(filePath, 'utf8');
+          // Check if the tag exists
+          const tagExists = fileContent.includes(body.tc_tags[i]);
+          if (tagExists) {
+            const fileForm = new FormData();
+            fileForm.append('token', body.token);
+            fileForm.append('project_id', body.project_id);
+            fileForm.append('execute', body.execute);
+            fileForm.append('cycle_id', body.cycle_id);
+            fileForm.append('build_id', body.build_id);
+            fileForm.append('tc_ids[]', body.tc_ids[i]);
+            fileForm.append('tc_tags[]', body.tc_tags[i]);
+            fileForm.append('report', fs.createReadStream(filePath));
+            const promise = axios.post(endPoint, fileForm, {
+              headers: {
+                'content-type': 'multipart/form-data'
+              }
+            }).then(response => response.data);
+
+            promises.push(promise);
           }
-        }).then(response => response.data);
 
-        promises.push(promise);
+        }
+      } catch (error) {
+        throw error;
       }
-    } catch (error) {
-      throw error;
-    }
-  });
-
+    })
+  }
   return promises;
 }
 
@@ -182,7 +185,6 @@ export const executeTestCase = (req: Request, res: Response, reportPath: string)
           const { body } = req;
           let tag = '';
           if (body.tc_tags.length > 1) {
-            console.log("this is bulk execute::::")
             tag = body.tc_tags.join(" or ");
           } else {
             tag = body.tc_tags[0];
@@ -203,33 +205,27 @@ export const executeTestCase = (req: Request, res: Response, reportPath: string)
 
           cypress.on('close', async (code) => {
             const onCloseResponse = res;
-            if (body.isBulkExecute) {
-              console.log("bulk execution start::::")
-              const status = bulkExecute(body);
-              onCloseResponse.status(200).send({ status: true, message:"successfully executed"});
-            } else {
-              const promises = updateStatusOnKualitee(reportPath, body);
+            const promises = updateStatusOnKualitee(reportPath, body);
 
-              try {
-                await Promise.all(promises);
-                console.log(
-                  '\x1b[32m%s\x1b[0m',
-                  `\n
+            try {
+              await Promise.all(promises);
+              console.log(
+                '\x1b[32m%s\x1b[0m',
+                `\n
                  <=====================================================================================>
                                              Status updated on kualitee
                  <=====================================================================================>\n`
-                );
-                onCloseResponse.status(200).send({ status: true, message: `Test case with TAG ${body.tc_tags} executed successfully. ` });
-              } catch (error: any) {
-                console.log(
-                  '\x1b[41m\x1b[37m%s\x1b[0m',
-                  `\n
+              );
+              onCloseResponse.status(200).send({ status: true, message: `Test case with TAG ${body.tc_tags} executed successfully. ` });
+            } catch (error: any) {
+              console.log(
+                '\x1b[41m\x1b[37m%s\x1b[0m',
+                `\n
                  <=====================================================================================>
                  ${JSON.stringify(error.response.data.errors)}, error occured while updating status on Kualitee Tool
                  <=====================================================================================>\n`
-                );
-                onCloseResponse.status(400).send({ status: false, message: error.response.data.errors });
-              }
+              );
+              onCloseResponse.status(400).send({ status: false, message: error.response.data.errors });
             }
           });
         }
@@ -245,7 +241,6 @@ export const bulkExecute = (body: any) => {
   const files = fs.readdirSync(folderPath);
 
   let test_cases = body.test_cases;
-  console.log("this is test casess without status::::", test_cases)
   let updated_test_cases: any[] = []
 
   files.forEach((file) => {
