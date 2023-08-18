@@ -50,41 +50,44 @@ function readReportDirectory(user_token: string, project_id: string, directoryPa
 function updateStatusOnKualitee(reportPath: string, body: any) {
   let base_url = body.base_URL;
   const endPoint = `${base_url}test_case_execution/execute_automatic`;
+  const files = fs.readdirSync(reportPath);
+
   const promises: Promise<any>[] = [];
 
-  const files = fs.readdirSync(reportPath);
-  files.forEach(file => {
-    const filePath = path.join(reportPath, file);
-    const splitFile = file.split('.');
+  for (let i = 0; i < body.tc_tags.length; i++) {
+    files.forEach(file => {
+      const filePath = path.join(reportPath, file);
 
-    try {
-      if (fs.statSync(filePath).isFile() && splitFile.includes('cucumber') && path.extname(filePath) === '.json') {
-        const fileForm = new FormData();
-        fileForm.append('token', body.token);
-        fileForm.append('project_id', body.project_id);
-        fileForm.append('execute', body.execute);
-        fileForm.append('cycle_id', body.cycle_id);
-        fileForm.append('build_id', body.build_id);
-        body.tc_ids.forEach((id: any) => {
-          fileForm.append('tc_ids[]', id);
-        });
-        body.tc_tags.forEach((tag: any) => {
-          fileForm.append('tc_tags[]', tag);
-        });
-        fileForm.append('report', fs.createReadStream(filePath));
-        const promise = axios.post(endPoint, fileForm, {
-          headers: {
-            'content-type': 'multipart/form-data'
+      try {
+        if (fs.statSync(filePath).isFile() && file.endsWith('cucumber.json')) {
+          const fileContent = fs.readFileSync(filePath, 'utf8');
+          // Check if the tag exists
+          const tagExists = fileContent.includes(body.tc_tags[i]);
+          if (tagExists) {
+            const fileForm = new FormData();
+            fileForm.append('token', body.token);
+            fileForm.append('project_id', body.project_id);
+            fileForm.append('execute', body.execute);
+            fileForm.append('cycle_id', body.cycle_id);
+            fileForm.append('build_id', body.build_id);
+            fileForm.append('tc_ids[]', body.tc_ids[i]);
+            fileForm.append('tc_tags[]', body.tc_tags[i]);
+            fileForm.append('report', fs.createReadStream(filePath));
+            const promise = axios.post(endPoint, fileForm, {
+              headers: {
+                'content-type': 'multipart/form-data'
+              }
+            }).then(response => response.data);
+
+            promises.push(promise);
           }
-        }).then(response => response.data);
 
-        promises.push(promise);
+        }
+      } catch (error) {
+        throw error;
       }
-    } catch (error) {
-      throw error;
-    }
-  });
-
+    })
+  }
   return promises;
 }
 
@@ -209,20 +212,20 @@ export const executeTestCase = (req: Request, res: Response, reportPath: string)
               console.log(
                 '\x1b[32m%s\x1b[0m',
                 `\n
-                <=====================================================================================>
-                                            Status updated on kualitee
-                <=====================================================================================>\n`
+                 <=====================================================================================>
+                                             Status updated on kualitee
+                 <=====================================================================================>\n`
               );
               onCloseResponse.status(200).send({ status: true, message: `Test case with TAG ${body.tc_tags} executed successfully. ` });
             } catch (error: any) {
               console.log(
                 '\x1b[41m\x1b[37m%s\x1b[0m',
                 `\n
-                <=====================================================================================>
-                ${JSON.stringify(error.response.data.errors)}, error occured while updating status on Kualitee Tool
-                <=====================================================================================>\n`
+                 <=====================================================================================>
+                 ${JSON.stringify(error.response.data.errors)}, error occured while updating status on Kualitee Tool
+                 <=====================================================================================>\n`
               );
-            onCloseResponse.status(400).send({ status: false, message: error.response.data.errors });
+              onCloseResponse.status(400).send({ status: false, message: error.response.data.errors });
             }
           });
         }
@@ -231,4 +234,54 @@ export const executeTestCase = (req: Request, res: Response, reportPath: string)
   } catch (error) {
     throw error;
   }
+}
+
+export const bulkExecute = (body: any) => {
+  const folderPath = 'cypress/reports';
+  const files = fs.readdirSync(folderPath);
+
+  let test_cases = body.test_cases;
+  let updated_test_cases: any[] = []
+
+  files.forEach((file) => {
+    if (file.endsWith('cucumber.json')) {
+      const filePath = path.join(folderPath, file);
+      const fileContent = fs.readFileSync(filePath, 'utf8');
+      const report = JSON.parse(fileContent);
+
+      report[0].elements.forEach((scenario: { tags: { name: string; }[]; steps: any[]; }) => {
+        scenario.tags.forEach((tag: { name: string; }) => {
+          const index = test_cases.findIndex(
+            (testCase: { tag: string; }) => testCase.tag === tag.name
+          );
+          if (index !== -1) {
+            // Found a matching tag
+            const status = scenario.steps.some(
+              (step: { result: { status: string; }; }) => step.result.status === 'failed'
+            )
+              ? 'Failed'
+              : scenario.steps.every(
+                (step: { result: { status: string; }; }) => step.result.status === 'passed'
+              )
+                ? 'Passed'
+                : scenario.steps.some(
+                  (step: { result: { status: string; }; }) => step.result.status === 'not run'
+                )
+                  ? 'Not Run'
+                  : '';
+
+            updated_test_cases.push({
+              ...test_cases[index],
+              status
+            })
+
+            test_cases.splice(index, 1); // Remove the found object from test_cases
+          }
+        });
+      });
+    }
+  });
+
+  console.log("this is updated test casess ::: ", updated_test_cases);
+  return updated_test_cases;
 }
