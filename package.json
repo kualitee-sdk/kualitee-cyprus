@@ -1,6 +1,6 @@
 {
-  "name": "kualitee_cypress",
-  "version": "0.3.4-beta",
+  "name": "kualitee_bridge",
+  "version": "0.4.0-beta",
   "description": "This package is for kualitee users to post their execution cycle from cypress to kualitee tool",
   "exports": {
     ".": {
@@ -40,7 +40,12 @@
   },
   "keywords": [
     "kualitee",
-    "kualitee_cypress"
+    "cypress",
+    "playwright",
+    "integration",
+    "testing",
+    "kualitee_cypress",
+    "kualitee_integration"
   ],
   "author": "kualitee team",
   "license": "ISC",
