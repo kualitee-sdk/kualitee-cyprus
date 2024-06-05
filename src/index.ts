@@ -1,9 +1,1 @@
-import * as CypressIntegration from './integrations/cypress';
-
-export const { 
-    readReportDirectory, 
-    postReport, 
-    postResult, 
-    executeTestCase, 
-    bulkExecute 
-  } = CypressIntegration;
+export { readReportDirectory, postReport, postResult, cypressTestCaseExecution, updateStatusOnKualitee } from './integrations/cypress';

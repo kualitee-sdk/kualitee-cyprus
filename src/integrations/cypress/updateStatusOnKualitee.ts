@@ -3,7 +3,7 @@ import * as path from 'path';
 import FormData from 'form-data'
 import axios from 'axios';
 
-export async function updateStatusOnKualitee(reportPath: string, body: any): Promise<any[]> {
+export function updateStatusOnKualitee(reportPath: string, body: any) {
   const base_url = body.base_URL;
   const endPoint = `${base_url}test_case_execution/execute_automatic`;
   const files = fs.readdirSync(reportPath);
@@ -11,6 +11,7 @@ export async function updateStatusOnKualitee(reportPath: string, body: any): Pro
   const promises: Promise<any>[] = [];
 
   for (let i = 0; i < body.tc_tags.length; i++) {
+
     files.forEach(file => {
       const filePath = path.join(reportPath, file);
 
@@ -26,7 +27,7 @@ export async function updateStatusOnKualitee(reportPath: string, body: any): Pro
             fileForm.append('execute', body.execute);
             fileForm.append('cycle_id', body.cycle_id);
             fileForm.append('build_id', body.build_id);
-            fileForm.append('tc_ids[]', body.tc_tags[i]); // Might be a typo, should it be body.tc_ids[i]?
+            fileForm.append('tc_ids[]', body.tc_ids[i]);
             fileForm.append('tc_tags[]', body.tc_tags[i]);
             fileForm.append('report', fs.createReadStream(filePath));
             const promise = axios.post(endPoint, fileForm, {
