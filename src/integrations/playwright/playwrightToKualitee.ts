@@ -29,10 +29,30 @@ export const playwrightToKualitee = (req: Request, res: Response, reportPath: st
                         console.log(data.toString());
                     });
 
-                    playwright.on('close', (code) => {
+                    playwright.on('close', async (code) => {
                         const onCloseResponse = res;
                         const promises = postPlaywrightReportOnKualitee(reportPath, body);
-                        onCloseResponse.status(200).send({ status: true, message: `execution done`})
+                        
+                        try {
+                            await Promise.all(promises);
+                            console.log(
+                              '\x1b[32m%s\x1b[0m',
+                              `\n
+                               <=====================================================================================>
+                                                           Report Generated on Kualitee
+                               <=====================================================================================>\n`
+                            );
+                            onCloseResponse.status(200).send({ status: true, message: `Executed successfully. ` });
+                          } catch (error: any) {
+                            console.log(
+                              '\x1b[41m\x1b[37m%s\x1b[0m',
+                              `\n
+                               <=====================================================================================>
+                               ${JSON.stringify(error.errors)}, error occured while updating status on Kualitee Tool
+                               <=====================================================================================>\n`
+                            );
+                            onCloseResponse.status(400).send({ status: false, message: error.errors });
+                          }
                     });
                 }
             })
