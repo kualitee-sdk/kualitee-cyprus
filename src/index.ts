@@ -1,1 +1,2 @@
-export { readReportDirectory, postReport, postResult, cypressTestCaseExecution, updateStatusOnKualitee } from './integrations/cypress';
+export { postReport, postResult, cypressTestCaseExecution } from './integrations/cypress';
+export { playwrightToKualitee } from './integrations/playwright';
