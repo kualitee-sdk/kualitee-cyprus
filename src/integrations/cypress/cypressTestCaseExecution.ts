@@ -18,7 +18,12 @@ export const cypressTestCaseExecution = (req: Request, res: Response, reportPath
         if (resultList.length > 0) {
           response.status(503).send({ status: false, message: 'The execution of testing is already in process.Please try in while..' })
         } else {
-          const { body } = req;
+          const { body,headers } = req;
+          body.token = body?.token || headers?.token || null;
+
+          if(!body?.token){
+            throw new Error('Invalid payload');
+          }
           let tag = '';
           if (body.tc_tags.length > 1) {
             tag = body.tc_tags.join(" or ");
