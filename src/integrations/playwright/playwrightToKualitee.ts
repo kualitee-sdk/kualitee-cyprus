@@ -42,7 +42,7 @@ export const playwrightToKualitee = (req: Request, res: Response, reportPath: st
                                                            Report Generated on Kualitee
                                <=====================================================================================>\n`
                             );
-                            onCloseResponse.status(200).send({ status: true, message: `Executed successfully. ` });
+                            onCloseResponse.status(200).send({ status: true, message: `Report Generated successfully. ` });
                           } catch (error: any) {
                             console.log(
                               '\x1b[41m\x1b[37m%s\x1b[0m',

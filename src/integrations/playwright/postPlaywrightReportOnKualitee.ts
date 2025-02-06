@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const postPlaywrightReportOnKualitee = (reportPath: string, body: any) => {
     const base_url = body.base_URL;
-    const endPoint = `https://apiss.kualiteestaging.com/api/v2/test_case/automation_testcase_report_execution`;
+    const endPoint = `${base_url}test_case/automation_testcase_report_execution`;
     const promises: Promise<any>[] = [];
     try {
         const fileContent = fs.readFileSync(reportPath, 'utf8');
