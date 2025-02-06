@@ -3,8 +3,7 @@ import axios from 'axios';
 
 export const postPlaywrightReportOnKualitee = (reportPath: string, body: any) => {
     const base_url = body.base_URL;
-    const endPoint = `https://apiss4.kualitee.com/api/v2/test_case/automation_testcase_report_execution`;
-    // const files = fs.readdirSync(reportPath);
+    const endPoint = `https://apiss.kualiteestaging.com/api/v2/test_case/automation_testcase_report_execution`;
     const promises: Promise<any>[] = [];
     try {
         const fileContent = fs.readFileSync(reportPath, 'utf8');
@@ -20,7 +19,11 @@ export const postPlaywrightReportOnKualitee = (reportPath: string, body: any) =>
             headers: {
                 'content-type': 'multipart/form-data'
             }
-        }).then(response => response.data);
+        }).then(response => response.data).catch(
+            (error) => {
+                console.log(error)
+            }
+        );
 
         promises.push(promise);
 
