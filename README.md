@@ -222,3 +222,5 @@ app.listen(port, hostname, () => {
 **path/to/report**: _string_ Path which were specify in reporter in `playwright.config.ts` like `./json-report/report.json`.
 
 Now you can execute the playwright cycle from Kualitee.
+
+**Note:** If you facing error while execution then set your **Node** version to **18.16.0**
