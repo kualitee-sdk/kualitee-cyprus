@@ -38,9 +38,9 @@ export const playwrightToKualitee = (req: Request, res: Response, reportPath: st
                             console.log(
                               '\x1b[32m%s\x1b[0m',
                               `\n
-                               <=====================================================================================>
-                                                           Report Generated on Kualitee
-                               <=====================================================================================>\n`
+                               <=============================================================>
+                                             Report Generated on Kualitee
+                               <=============================================================>\n`
                             );
                             onCloseResponse.status(200).send({ status: true, message: `Report Generated successfully. ` });
                           } catch (error: any) {

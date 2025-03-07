@@ -4,7 +4,7 @@ This package is for [Kualitee](https://www.kualitee.com/) users.
 ###### Core features
 * **Integration with [Cypress](https://www.cypress.io/)**
   * Lets Generate report on kualitee for Cypress test execution.
-  * Integration kualitee with cypress, execute the scenario from kualitee and update the status of status of test case.
+  * Integration kualitee with cypress, execute the scenario from kualitee and update the status of test case.
 * **Integration with [Playwright](https://playwright.dev/)**
   * Run Playwright tests from Kualitee and get reports on one place.
 
@@ -13,7 +13,7 @@ This package is for [Kualitee](https://www.kualitee.com/) users.
 - [Integration with Cypress](#integration-with-cypress)
   - [Post Cypress report to Kualitee](#post-report-to-kualitee)
   - [Execute scenario from kualitee and update the status](#execute-scenario-from-kualitee-and-update-the-status)
-- [Integration with Playwright]()
+- [Integration with Playwright](#integration-with-playwright)
   - [Post Playwright report to Kualitee](#integration-with-playwright)
 
 
@@ -205,7 +205,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const port = 3000
 const hostname = 'localhost';
 
-app.post('/script-run', (req, res) => {
+app.post('/run-test', (req, res) => {
   playwrightToKualitee(req, res, './json-report/report.json')
 });
 
