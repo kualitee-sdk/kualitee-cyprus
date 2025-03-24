@@ -1,6 +1,6 @@
 {
   "name": "kualitee_bridge",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "This package is for kualitee users to post their execution cycle from cypress to kualitee tool",
   "exports": {
     ".": {
