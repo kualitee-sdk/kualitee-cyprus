@@ -221,8 +221,8 @@ app.listen(port, hostname, () => {
 
 **path/to/report**: _string_ Path which were specify in reporter in `playwright.config.ts` like `./json-report/report.json`.
 
-Now your server is ready to run and just hit the command in terminal `node index.js`  and your server will up and ready to communicate with kualitee. In case of above mentioned server, your integration url with kualitee will be `http://localhost:3000/run-test'. 
-**Where:** `http://localhost` is your server base URL `3000:` is port number and `run-test:` is end point
+Now your server configured, just hit the command `node index.js` in terminal and your server will be up and ready to communicate with kualitee. In the case of above mentioned server, your integration url with kualitee will be `http://localhost:3000/run-test`. 
+**Where:** `http://localhost` is your server base URL `3000:` is port number and `run-test:` is end point.
 
 Now you can execute the playwright cycle from Kualitee.
 
