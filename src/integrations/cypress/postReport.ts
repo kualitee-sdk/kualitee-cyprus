@@ -5,11 +5,16 @@ export const postReport = async () => {
   try {
     const fileContent = fs.readFileSync(`${process.cwd()}/package.json`, 'utf8');
     const kualiteeJson = JSON.parse(fileContent);
-    const user_token = kualiteeJson.kualiteeConfigs.token;
-    const project_id = kualiteeJson.kualiteeConfigs.projectId;
-    const directoryPath = kualiteeJson.kualiteeConfigs.reportPath;
+    const config = {
+      user_token: kualiteeJson.kualiteeConfigs.token,
+      project_id: kualiteeJson.kualiteeConfigs.projectId,
+      build_id: kualiteeJson.kualiteeConfigs?.build,
+      start_date: kualiteeJson.kualiteeConfigs?.start_date,
+      end_date: kualiteeJson.kualiteeConfigs?.end_date,
+      directoryPath: kualiteeJson.kualiteeConfigs.reportPath
+    };
 
-    return await readReportDirectory(user_token, project_id, directoryPath)
+    return await readReportDirectory(config)
       .then((response) => {
         if (response.length && response.length > 0) {
           const responseObject = response[0].data;
