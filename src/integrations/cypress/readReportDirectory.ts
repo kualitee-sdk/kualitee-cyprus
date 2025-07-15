@@ -4,7 +4,7 @@ import FormData from 'form-data'
 import axios from 'axios';
 
 export async function readReportDirectory(config:any): Promise<any[]> {
-  const endPoint = 'https://apiss.kualiteestaging.com/api/v2/test_case/automation_testcase_report_execution';
+  const endPoint = 'https://apiss.kualitee.com/api/v2/test_case/automation_testcase_report_execution';
 
   try {
     const promises: Promise<any>[] = [];
