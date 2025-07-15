@@ -2,7 +2,12 @@ import { readReportDirectory } from './index';
 
 export const postResult = async (user_token: string, project_id: string, directoryPath: string) => {
   try {
-    return await readReportDirectory(user_token, project_id, directoryPath)
+    const config = {
+      user_token: user_token,
+      project_id: project_id,
+      directoryPath: directoryPath
+    }
+    return await readReportDirectory(config)
       .then((response) => {
         if (response.length && response.length > 0) {
           const responseObject = response[0].data;
