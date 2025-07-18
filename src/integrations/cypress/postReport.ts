@@ -25,7 +25,7 @@ export const postReport = async () => {
                       ${responseObject.message} on Kualitee Tool
             <=============================================================>\n`
           );
-          return;
+          return { data: response[0].data.data };
         }
         console.log(
           '\x1b[32m%s\x1b[0m',
@@ -34,6 +34,7 @@ export const postReport = async () => {
                       Report Generated Successfully on Kualitee
             <=============================================================>\n`
         );
+        return { data: response[0].data.data };
       })
       .catch((error) => {
         console.log(
