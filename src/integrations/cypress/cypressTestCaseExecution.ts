@@ -1,78 +1,95 @@
 import { Request, Response } from 'express';
 import ps from 'ps-node';
-import { spawn } from 'child_process';
+// import { spawn } from 'child_process';
 import { updateStatusOnKualitee } from './index';
+import { spawn } from "child_process";
+import psList from "ps-list";             // modern alternative to ps-node
 
-export const cypressTestCaseExecution = (req: Request, res: Response, reportPath: string) => {
+export async function cypressTestCaseExecution(req: Request, res: Response, reportPath: string) {
   try {
-    const response = res;
+    // 1. If ping request → return simple response
     if (req.body.ping) {
-      res.send({ status: true, message: 'Server working properly...' })
-    } else {
-      ps.lookup({ command: 'cypress' }, (err, resultList) => {
-        if (err) {
-          throw err;
-        }
+      return res.send({ status: true, message: "Server working properly..." });
+    }
 
-        // If there are any running processes, send an error response
-        if (resultList.length > 0) {
-          response.status(503).send({ status: false, message: 'The execution of testing is already in process.Please try in while..' })
-        } else {
-          const { body,headers } = req;
-          body.token = body?.token || headers?.token || null;
+    // 2. Check if any Cypress process is already running
+    const runningProcesses = await psList();
+    const cypressRunning = runningProcesses.some(p =>
+      p.name.toLowerCase().includes("cypress")
+    );
 
-          if(!body?.token){
-            throw new Error('Invalid payload');
-          }
-          let tag = '';
-          if (body.tc_tags.length > 1) {
-            tag = body.tc_tags.join(" or ");
-          } else {
-            tag = body.tc_tags[0];
-          }
+    if (cypressRunning) {
+      return res
+        .status(503)
+        .send({
+          status: false,
+          message: "Cypress execution already in progress. Please try again later."
+        });
+    }
 
-          const cypressArgs = ['cypress', 'run', '--env', `TAGS="${tag}"`];
-          const cypress = spawn(/^win/.test(process.platform) ? 'npx.cmd' : 'npx', cypressArgs);
+    // 3. Merge token (from body or headers)
+    const token = req.body?.token || req.headers?.token;
+    if (!token) throw new Error("Invalid payload: Token missing.");
 
-          // log Cypress output to console
-          cypress.stdout.on('data', (data) => {
-            console.log(data.toString());
-          });
+    // 4. Prepare tags for Cypress
+    const tags = req.body.tc_tags;
+    const tagExpression = Array.isArray(tags) ? tags.join(" or ") : tags;
 
-          // log Cypress errors to console
-          cypress.stderr.on('data', (error) => {
-            console.log(error.toString());
-          });
+    // 5. Build command for Cypress
+    const cmd = `npx cypress run --env TAGS="${tagExpression}"`;
 
-          cypress.on('close', async (code) => {
-            const onCloseResponse = res;
-            const promises = updateStatusOnKualitee(reportPath, body);
+    console.log("\nExecuting command:", cmd);
 
-            try {
-              await Promise.all(promises);
-              console.log(
-                '\x1b[32m%s\x1b[0m',
-                `\n
-                 <=====================================================================================>
-                                             Status updated on kualitee
-                 <=====================================================================================>\n`
-              );
-              onCloseResponse.status(200).send({ status: true, message: `Test case with TAG ${body.tc_tags} executed successfully. ` });
-            } catch (error: any) {
-              console.log(
-                '\x1b[41m\x1b[37m%s\x1b[0m',
-                `\n
+    // 6. Spawn command (universal for all Node versions + Windows)
+    const cypressProcess = spawn(cmd, {
+      shell: true,
+      stdio: "pipe"
+    });
+
+    // 7. Log real-time output from Cypress
+    cypressProcess.stdout.on("data", data => {
+      console.log(data.toString());
+    });
+
+    // 8. Log real-time errors
+    cypressProcess.stderr.on("data", err => {
+      console.error(err.toString());
+    });
+
+    // 9. After Cypress completes → update status on Kualitee
+    cypressProcess.on("close", async () => {
+      try {
+        await Promise.all(
+          updateStatusOnKualitee(reportPath, req.body)
+        );
+
+        console.log(
+          "\x1b[32m%s\x1b[0m",
+          `
+<=====================================================================================>
+                             Status updated on Kualitee
+<=====================================================================================>`
+        );
+
+        res.status(200).send({
+          status: true,
+          message: `Test cases with TAG "${tags}" executed successfully.`
+        });
+      } catch (error: any) {
+        console.log(
+          '\x1b[41m\x1b[37m%s\x1b[0m',
+          `\n
                  <=====================================================================================>
                  ${JSON.stringify(error.response.data.errors)}, error occured while updating status on Kualitee Tool
                  <=====================================================================================>\n`
-              );
-              onCloseResponse.status(400).send({ status: false, message: error.response.data.errors });
-            }
-          });
-        }
-      });
-    }
+        );
+        res.status(400).send({ status: false, message: error.response.data.errors });
+      }
+
+
+    });
   } catch (error) {
     throw error;
   }
-};
+}
+
