@@ -4,12 +4,17 @@ import ps from 'ps-node';
 import { updateStatusOnKualitee } from './index';
 import { spawn } from "child_process";
 import psList from "ps-list";             // modern alternative to ps-node
+import { fetchReportForKualitee } from './index';
 
 export async function cypressTestCaseExecution(req: Request, res: Response, reportPath: string) {
   try {
     // 1. If ping request → return simple response
     if (req.body.ping) {
       return res.send({ status: true, message: "Server working properly..." });
+    }
+
+    if (req.body.is_get_report) {
+      return await fetchReportForKualitee(req.body, reportPath, res);
     }
 
     // 2. Check if any Cypress process is already running

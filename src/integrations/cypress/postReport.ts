@@ -11,7 +11,8 @@ export const postReport = async () => {
       build_id: kualiteeJson.kualiteeConfigs?.build,
       start_date: kualiteeJson.kualiteeConfigs?.start_date,
       end_date: kualiteeJson.kualiteeConfigs?.end_date,
-      directoryPath: kualiteeJson.kualiteeConfigs.reportPath
+      directoryPath: kualiteeJson.kualiteeConfigs.reportPath,
+      base_url: 'https://apiss.kualitee.com/api/v2/'
     };
 
     return await readReportDirectory(config)
