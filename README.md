@@ -12,8 +12,8 @@ This package is for [Kualitee](https://www.kualitee.com/) users.
 - [Installation](#npm)
 - [Integration with Cypress](#integration-with-cypress)
   - [Sync Cypress report to Kualitee](#sync-cypress-report-to-kualitee)
-    - [Using Cypress Environment](#using-cypress-environment-approach-1)
-    - [Using Kualitee Tool](#using-kualitee-tool-approach-2)
+    - [Using Cypress Environment (Approach 1)](#using-cypress-environment-approach-1)
+    - [Using Kualitee Tool (Approach 2)](#using-kualitee-tool-approach-2)
   - [Execute scenario from kualitee and update the status](#execute-scenario-from-kualitee-and-update-the-status)
 - [Integration with Playwright](#integration-with-playwright)
   - [Post Playwright report to Kualitee](#integration-with-playwright)
@@ -150,8 +150,8 @@ app.listen(port, hostname, () => {
 ```
 
 > [!TIP]
-> Once the setup in **Cypress** is complete, you only need to configure the integration part in **Kualitee**. [Click here for integration part in Kualitee](https://medium.com/@yaseennasri8/streamlining-the-testing-process-with-cypress-cucumber-integration-in-kualitee-bb47584948ba)
-> If you use the Express server shown above, then your integration URL in Kualitee will be: `http://localhost:3000/execute-BDD`
+> - Once the setup in **Cypress** is complete, you only need to configure the integration part in **Kualitee**. [Click here for integration part in Kualitee](https://medium.com/@yaseennasri8/streamlining-the-testing-process-with-cypress-cucumber-integration-in-kualitee-bb47584948ba)
+> - If you use the Express server shown above, then your integration URL in Kualitee will be: `http://localhost:3000/execute-BDD`
 
 
 
