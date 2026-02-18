@@ -149,6 +149,10 @@ app.listen(port, hostname, () => {
 })
 ```
 
+> [!TIP]
+> Once the setup in **Cypress** is complete, you only need to configure the integration part in **Kualitee**. [Click here for integration part in Kualitee](https://medium.com/@yaseennasri8/streamlining-the-testing-process-with-cypress-cucumber-integration-in-kualitee-bb47584948ba)
+> If you use the Express server shown above, then your integration URL in Kualitee will be: `http://localhost:3000/execute-BDD`
+
 
 
 ## <mark style="background-color: #3b85ff">Execute scenario from kualitee and update the status</mark>
