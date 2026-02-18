@@ -39,8 +39,6 @@ export async function fetchReportForKualitee(body: any, reportPath: string, res:
         stdio: "pipe"
     });
 
-    console.log("body ::: ", body);
-
     // 7. Log real-time output from Cypress
     cypressProcess.stdout.on("data", data => {
         console.log(data.toString());
@@ -65,7 +63,10 @@ export async function fetchReportForKualitee(body: any, reportPath: string, res:
                                   ${responseObject.message} on Kualitee Tool
                         <=============================================================>\n`
                         );
-                        return { data: response[0].data.data };
+                        return res.status(200).send({
+                            status: true,
+                            data: responseObject.data
+                        });
                     }
                     console.log(
                         '\x1b[32m%s\x1b[0m',
@@ -74,7 +75,11 @@ export async function fetchReportForKualitee(body: any, reportPath: string, res:
                                   Report Generated Successfully on Kualitee
                         <=============================================================>\n`
                     );
-                    return { data: response[0].data.data };
+                    return res.status(200).send({
+                        status: true,
+                        message: "Report generated successfully",
+                        data: []
+                    });
                 })
                 .catch((error) => {
                     console.log(
@@ -84,6 +89,10 @@ export async function fetchReportForKualitee(body: any, reportPath: string, res:
                                   ${error.response.data.errors}, Report cannot be generated on Kualitee Tool
                         <=====================================================================================>\n`
                     );
+                    return res.status(500).send({
+                        status: false,
+                        message: error?.response?.data?.errors || "Report generation failed"
+                    });
                 });
         } catch (error: any) {
         }

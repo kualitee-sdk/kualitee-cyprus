@@ -11,7 +11,9 @@ This package is for [Kualitee](https://www.kualitee.com/) users.
 ## Table of Contents
 - [Installation](#npm)
 - [Integration with Cypress](#integration-with-cypress)
-  - [Post Cypress report to Kualitee](#post-report-to-kualitee)
+  - [Sync Cypress report to Kualitee](#sync-cypress-report-to-kualitee)
+    - [Using Cypress Environment](#using-cypress-environment)
+    - [Using Kualitee Tool](#using-kualitee-tool)
   - [Execute scenario from kualitee and update the status](#execute-scenario-from-kualitee-and-update-the-status)
 - [Integration with Playwright](#integration-with-playwright)
   - [Post Playwright report to Kualitee](#integration-with-playwright)
@@ -25,9 +27,11 @@ This package is for [Kualitee](https://www.kualitee.com/) users.
 npm install kualitee_bridge
 ```
 # Integration with Cypress
-By following the some simple and easiest configuration the kualitee can get all reports on single place.
-## <mark style="background-color: #3b85ff">Post Report to Kualitee</mark>
-If you are using [Kualitee](https://www.kualitee.com/) testing tool then you can generate the execution cycle on Kualitee by following these steps.
+By following the some simple and easiest configuration the kualitee can get all reports and status on single place.
+## <mark style="background-color: #3b85ff">Sync Cypress Report to Kualitee</mark>
+If you are using [Kualitee](https://www.kualitee.com/) as your testing tool, you can sync your Cypress execution report with Kualitee using two different approaches. You can choose the approach that best fits your setup :relaxed:.
+## Using Cypress Environment (Approach 1)
+You can send your test reports directly to Kualitee from your Cypress project. You do not need to manage or upload reports manually. Just add a small configuration in your Cypress setup, and everything will work automatically. Follow the setup instructions below to get started.
 ### Step 1: Configure the `kualiteeConfigs` to `package.json`
 ```
   "kualiteeConfigs": {
@@ -45,7 +49,7 @@ If you are using [Kualitee](https://www.kualitee.com/) testing tool then you can
 **reportPath**: _string_ The path in the cypress project where execution reports will generate like `cypress/e2e/reports`.
 
 
-### Step 2: Import or require the postResult from kualitee_cypress
+### Step 2: Import or require the postResult from kualitee_bridge
 `import` or `require` the `postReport` method in `cypress.config.js`.
 
 ```
