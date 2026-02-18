@@ -13,7 +13,7 @@ This package is for [Kualitee](https://www.kualitee.com/) users.
 - [Integration with Cypress](#integration-with-cypress)
   - [Sync Cypress report to Kualitee](#sync-cypress-report-to-kualitee)
     - [Using Cypress Environment](#using-cypress-environment-approach-1)
-    - [Using Kualitee Tool](#using-kualitee-tool)
+    - [Using Kualitee Tool](#using-kualitee-tool-approach-2)
   - [Execute scenario from kualitee and update the status](#execute-scenario-from-kualitee-and-update-the-status)
 - [Integration with Playwright](#integration-with-playwright)
   - [Post Playwright report to Kualitee](#integration-with-playwright)
