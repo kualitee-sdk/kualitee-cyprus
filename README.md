@@ -281,4 +281,4 @@ Now your server configured, just hit the command `node index.js` in terminal and
 
 Now you can execute the playwright cycle from Kualitee.
 
-**Note:** If you facing error while execution then set your **Node** version to **18.16.0**
+**Note:** If you are using a package version earlier than **2.0.0**, only **Node.js** version **18.16.0** is supported.
