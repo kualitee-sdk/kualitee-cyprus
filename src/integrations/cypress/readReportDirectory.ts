@@ -3,8 +3,8 @@ import * as path from 'path';
 import FormData from 'form-data'
 import axios from 'axios';
 
-export async function readReportDirectory(config:any): Promise<any[]> {
-  const endPoint = 'https://apiss.kualitee.com/api/v2/test_case/automation_testcase_report_execution';
+export async function readReportDirectory(config: any): Promise<any[]> {
+  const endPoint = `${config.base_url}test_case/automation_testcase_report_execution`;
 
   try {
     const promises: Promise<any>[] = [];
@@ -19,12 +19,12 @@ export async function readReportDirectory(config:any): Promise<any[]> {
           const fileForm = new FormData();
           fileForm.append('token', config.user_token);
           fileForm.append('project_id', config.project_id);
-          if(config.build_id)
-          fileForm.append('build_id', config.build_id);
-          if(config.start_date)
-          fileForm.append('cycleStartDate', config.start_date);
-          if(config.end_date)
-          fileForm.append('cycleEndDate', config.end_date);
+          if (config.build_id)
+            fileForm.append('build_id', config.build_id);
+          if (config.start_date)
+            fileForm.append('cycleStartDate', config.start_date);
+          if (config.end_date)
+            fileForm.append('cycleEndDate', config.end_date);
           fileForm.append('type', type);
           fileForm.append('userfile[]', fs.createReadStream(filePath) as never);
 

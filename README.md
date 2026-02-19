@@ -11,7 +11,9 @@ This package is for [Kualitee](https://www.kualitee.com/) users.
 ## Table of Contents
 - [Installation](#npm)
 - [Integration with Cypress](#integration-with-cypress)
-  - [Post Cypress report to Kualitee](#post-report-to-kualitee)
+  - [Sync Cypress report to Kualitee](#sync-cypress-report-to-kualitee)
+    - [Using Cypress Environment (Approach 1)](#using-cypress-environment-approach-1)
+    - [Using Kualitee Tool (Approach 2)](#using-kualitee-tool-approach-2)
   - [Execute scenario from kualitee and update the status](#execute-scenario-from-kualitee-and-update-the-status)
 - [Integration with Playwright](#integration-with-playwright)
   - [Post Playwright report to Kualitee](#integration-with-playwright)
@@ -25,9 +27,11 @@ This package is for [Kualitee](https://www.kualitee.com/) users.
 npm install kualitee_bridge
 ```
 # Integration with Cypress
-By following the some simple and easiest configuration the kualitee can get all reports on single place.
-## <mark style="background-color: #3b85ff">Post Report to Kualitee</mark>
-If you are using [Kualitee](https://www.kualitee.com/) testing tool then you can generate the execution cycle on Kualitee by following these steps.
+By following the some simple and easiest configuration the kualitee can get all reports and status on single place.
+## <mark style="background-color: #3b85ff">Sync Cypress Report to Kualitee</mark>
+If you are using [Kualitee](https://www.kualitee.com/) as your test management tool, you can sync your Cypress execution report with Kualitee using two different approaches. You can choose the approach that best fits your setup :relaxed:.
+## Using Cypress Environment (Approach 1)
+You can send your test reports directly to Kualitee from your Cypress project. You do not need to manage or upload reports manually. Just add a small configuration in your Cypress setup, and everything will work automatically. Follow the setup instructions below to get started.
 ### Step 1: Configure the `kualiteeConfigs` to `package.json`
 ```
   "kualiteeConfigs": {
@@ -45,7 +49,7 @@ If you are using [Kualitee](https://www.kualitee.com/) testing tool then you can
 **reportPath**: _string_ The path in the cypress project where execution reports will generate like `cypress/e2e/reports`.
 
 
-### Step 2: Import or require the postResult from kualitee_cypress
+### Step 2: Import or require the postResult from kualitee_bridge
 `import` or `require` the `postReport` method in `cypress.config.js`.
 
 ```
@@ -100,6 +104,57 @@ On cypress execution, you will get the `Successfull` or `Error` message in termi
 
 ![Screenshot from 2023-04-27 09-49-28](https://user-images.githubusercontent.com/48677205/234762673-e87ad03c-28dc-4f67-a089-6e3ff5df940f.png)
 
+## Using Kualitee Tool (Approach 2)
+After installing kualitee-bridge, you only need to complete the setup once. After that, you can run Cypress tests directly from Kualitee anytime and receive the execution report automatically.
+
+## Set up a server
+Set up a server inside your Cypress project to allow communication with Kualitee.
+
+> [!IMPORTANT]
+> You need to install following packages before adding the code snipet.
+> ```
+> npm install kualitee_bridge
+> ```
+> ```
+> npm i express
+> ```
+> ```
+> npm i cors
+> ```
+> ```
+> npm i body-parser
+> 
+```javascript
+const express = require('express')
+var cors = require('cors');
+var bodyParser = require('body-parser')
+const app = express()
+
+const { cypressTestCaseExecution } = require("kualitee_bridge")
+
+app.use(cors());
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+const port = 3000
+const hostname = 'localhost';
+
+app.post('/execute-BDD', (req, res) => {
+  cypressTestCaseExecution(req, res, 'cypress/reports')
+});
+
+app.listen(port, hostname, () => {
+  console.log(`Server running at http://${hostname}:${port}/`)
+})
+```
+
+> [!TIP]
+> - Once the setup in **Cypress** is complete, you only need to configure the integration part in **Kualitee**. [Click here for integration part in Kualitee](https://medium.com/@yaseennasri8/streamlining-the-testing-process-with-cypress-cucumber-integration-in-kualitee-bb47584948ba)
+> - If you use the Express server shown above, then your integration URL in Kualitee will be: `http://localhost:3000/execute-BDD`
+
+
+
 ## <mark style="background-color: #3b85ff">Execute scenario from kualitee and update the status</mark>
 Lets execute the scenarios from kualitee and get the latest status on kualitee.
 
@@ -130,7 +185,7 @@ By adding the following express code snipet in your `index.js` file on root dire
 > npm i body-parser
 > ```
 
-```
+```javascript
 const express = require('express')
 var cors = require('cors');
 var bodyParser = require('body-parser')
@@ -146,7 +201,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const port = 3000
 const hostname = 'localhost';
 
-app.post('/script-run', (req, res) => {
+app.post('/execute-BDD', (req, res) => {
   cypressTestCaseExecution(req, res, 'cypress/reports')
 });
 
@@ -189,7 +244,7 @@ By adding the following express code snipet in your `index.js` file on root dire
 > npm i body-parser
 > ```
 
-```
+```javascript
 const express = require('express')
 var cors = require('cors');
 var bodyParser = require('body-parser')
@@ -201,11 +256,10 @@ app.use(cors());
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
 const port = 3000
 const hostname = 'localhost';
 
-app.post('/run-test', (req, res) => {
+app.post('/script-run', (req, res) => {
   playwrightToKualitee(req, res, './json-report/report.json')
 });
 
