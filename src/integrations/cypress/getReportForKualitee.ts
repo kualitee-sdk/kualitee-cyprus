@@ -1,15 +1,14 @@
 import { Response } from "express";
-import psList from "ps-list";             // modern alternative to ps-node
 import { spawn } from "child_process";
 import { readReportDirectory } from "./readReportDirectory";
-
+let isExecutionRunning = false;
 export async function fetchReportForKualitee(body: any, reportPath: string, res: Response) {
-    const runningProcesses = await psList();
-    const cypressRunning = runningProcesses.some(p =>
-        p.name.toLowerCase().includes("cypress")
-    );
+    // const runningProcesses = await psList();
+    // const cypressRunning = runningProcesses.some(p =>
+    //     p.name.toLowerCase().includes("cypress")
+    // );
 
-    if (cypressRunning) {
+    if (isExecutionRunning) {
         return res
             .status(503)
             .send({
@@ -17,6 +16,7 @@ export async function fetchReportForKualitee(body: any, reportPath: string, res:
                 message: "Cypress execution already in progress. Please try again later."
             });
     }
+    isExecutionRunning = true; // 🔒 lock execution
 
     const config = {
         user_token: body.token,
@@ -51,6 +51,7 @@ export async function fetchReportForKualitee(body: any, reportPath: string, res:
 
     // 9. After Cypress completes → update status on Kualitee
     cypressProcess.on("close", async () => {
+        isExecutionRunning = false;
         try {
             return await readReportDirectory(config)
                 .then((response) => {

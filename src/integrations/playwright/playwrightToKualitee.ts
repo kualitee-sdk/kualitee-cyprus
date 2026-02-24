@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { spawn } from "child_process";
-import psList from "ps-list";
 import { postPlaywrightReportOnKualitee } from "./postPlaywrightReportOnKualitee";
+
+let isExecutionRunning = false;
 
 export const playwrightToKualitee = async (
     req: Request,
@@ -15,17 +16,19 @@ export const playwrightToKualitee = async (
         }
 
         // 2. Prevent parallel Playwright execution
-        const processes = await psList();
-        const playwrightRunning = processes.some(p =>
-            p.name.toLowerCase().includes("playwright")
-        );
+        // const processes = await psList();
+        // const playwrightRunning = processes.some(p =>
+        //     p.name.toLowerCase().includes("playwright")
+        // );
 
-        if (playwrightRunning) {
+        if (isExecutionRunning) {
             return res.status(503).send({
                 status: false,
                 message: "Execution already in progress. Please try again later."
             });
         }
+
+        isExecutionRunning = true; // 🔒 lock execution
 
         // 3. Prepare Playwright command
         const command = "npx playwright test";
@@ -49,6 +52,7 @@ export const playwrightToKualitee = async (
 
         // 6. After Playwright completes → post report to Kualitee
         playwrightProcess.on("close", async () => {
+            isExecutionRunning = false;
             try {
                 await Promise.all(
                     postPlaywrightReportOnKualitee(reportPath, req.body)
@@ -76,6 +80,7 @@ export const playwrightToKualitee = async (
             }
         });
     } catch (error: any) {
+        isExecutionRunning = false;
         console.error(error);
         res.status(500).send({
             status: false,

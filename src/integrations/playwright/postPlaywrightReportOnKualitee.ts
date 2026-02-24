@@ -14,7 +14,12 @@ export const postPlaywrightReportOnKualitee = (reportPath: string, body: any) =>
         fileForm.append('project_id', body.project_id);
         fileForm.append('type', 'playwright');
         fileForm.append('test_cases_detail', finalReport);
-
+        if (body.build)
+            fileForm.append('build_id', body.build);
+        if (body.start_date)
+            fileForm.append('cycleStartDate', body.start_date);
+        if (body.end_date)
+            fileForm.append('cycleEndDate', body.end_date);
         const promise = axios.post(endPoint, fileForm, {
             headers: {
                 'content-type': 'multipart/form-data'

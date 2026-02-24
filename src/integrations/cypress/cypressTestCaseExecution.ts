@@ -1,11 +1,9 @@
 import { Request, Response } from 'express';
-import ps from 'ps-node';
-// import { spawn } from 'child_process';
 import { updateStatusOnKualitee } from './index';
 import { spawn } from "child_process";
-import psList from "ps-list";             // modern alternative to ps-node
 import { fetchReportForKualitee } from './index';
 
+let isExecutionRunning = false;
 export async function cypressTestCaseExecution(req: Request, res: Response, reportPath: string) {
   try {
     // 1. If ping request → return simple response
@@ -18,12 +16,12 @@ export async function cypressTestCaseExecution(req: Request, res: Response, repo
     }
 
     // 2. Check if any Cypress process is already running
-    const runningProcesses = await psList();
-    const cypressRunning = runningProcesses.some(p =>
-      p.name.toLowerCase().includes("cypress")
-    );
+    // const runningProcesses = await psList();
+    // const cypressRunning = runningProcesses.some(p =>
+    //   p.name.toLowerCase().includes("cypress")
+    // );
 
-    if (cypressRunning) {
+    if (isExecutionRunning) {
       return res
         .status(503)
         .send({
@@ -32,9 +30,15 @@ export async function cypressTestCaseExecution(req: Request, res: Response, repo
         });
     }
 
+    isExecutionRunning = true; // 🔒 lock execution
+
     // 3. Merge token (from body or headers)
     const token = req.body?.token || req.headers?.token;
-    if (!token) throw new Error("Invalid payload: Token missing.");
+    if (!token) {
+      isExecutionRunning = false;
+      throw new Error("Invalid payload: Token missing.");
+    }
+
 
     // 4. Prepare tags for Cypress
     const tags = req.body.tc_tags;
@@ -63,6 +67,7 @@ export async function cypressTestCaseExecution(req: Request, res: Response, repo
 
     // 9. After Cypress completes → update status on Kualitee
     cypressProcess.on("close", async () => {
+      isExecutionRunning = false;
       try {
         await Promise.all(
           updateStatusOnKualitee(reportPath, req.body)
@@ -94,6 +99,7 @@ export async function cypressTestCaseExecution(req: Request, res: Response, repo
 
     });
   } catch (error) {
+    isExecutionRunning = false;
     throw error;
   }
 }
