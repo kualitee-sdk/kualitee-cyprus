@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { spawn } from "child_process";
 import { postPlaywrightReportOnKualitee } from "./postPlaywrightReportOnKualitee";
+import { runSequentiallyByTags } from "./playwrightCucumberTagRunner";
 
 let isExecutionRunning = false;
 
@@ -15,16 +16,35 @@ export const playwrightToKualitee = async (
             return res.send({ status: true, message: "Server is up!" });
         }
 
-        // 2. Prevent parallel Playwright execution
-        // const processes = await psList();
-        // const playwrightRunning = processes.some(p =>
-        //     p.name.toLowerCase().includes("playwright")
-        // );
-
         if (isExecutionRunning) {
             return res.status(503).send({
                 status: false,
                 message: "Execution already in progress. Please try again later."
+            });
+        }
+
+        // 2. Async Non-blocking Execution for Cycle Runs
+        if (req.body?.is_cycleExecute === true) {
+            isExecutionRunning = true;
+
+            // Fire and Forget: Kick off the process in the background
+            runSequentiallyByTags(req.body)
+                .then((summary) => {
+                    console.log("\n[Background Process] Cycle execution completed successfully.");
+                    console.table(summary); // Prints clean summary matrix to your server console
+                })
+                .catch((error) => {
+                    console.error("\n[Background Process Error] Execution failed:", error);
+                })
+                .finally(() => {
+                    // Always release the lock when background execution completely concludes
+                    isExecutionRunning = false; 
+                });
+
+            // Instantly respond back to the client without waiting for tests
+            return res.status(200).send({
+                status: true,
+                message: "Execution started successfully."
             });
         }
 
