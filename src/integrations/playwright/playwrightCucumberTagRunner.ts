@@ -17,7 +17,7 @@ export const runSequentiallyByTags = async (body: any): Promise<any[]> => {
         console.log(`\n[Runner] Executing TestCase: ${tc.tc_name} with tag: ${tc.tc_tag}`);
 
         // 1. Generate unique dynamic path for this iteration
-        const uniqueReportName = `report_${tc.id}_${Date.now()}.json`;
+        const uniqueReportName = `report_${tc.tc_tag}_${Date.now()}.json`;
         const tempReportPath = path.join(process.cwd(), uniqueReportName);
 
         // 2. FIXED: Feed the unique file path directly into the cucumber-js formatter option
@@ -47,7 +47,7 @@ export const runSequentiallyByTags = async (body: any): Promise<any[]> => {
             if (fs.existsSync(tempReportPath)) {
                 try {
                     fs.unlinkSync(tempReportPath);
-                    console.log(`[Cleanup] Securely deleted temporary file: ${uniqueReportName}`);
+                    // console.log(`[Cleanup] Securely deleted temporary file: ${uniqueReportName}`);
                 } catch (cleanupErr) {
                     console.error(`[Cleanup Error] Could not delete ${uniqueReportName}:`, cleanupErr);
                 }
