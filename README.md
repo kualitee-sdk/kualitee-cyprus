@@ -285,10 +285,11 @@ Now your server configured, just hit the command `node index.js` in terminal and
 **Where:** `http://localhost` is your server base URL `3000:` is port number and `run-test:` is end point.
 
 ## Standard Playwright Report Sync (Approach 1)
-Execute your test suites using your local json-report configurations.
+Execute your test suites using from Kualitee and manage your automated test reports in one place.
 
 ## Asynchronous Cucumber Cycle Execution (Approach 2) ✨ New Feature
 This feature allows you to trigger test cycles containing sequential, tag-targeted Cucumber scenarios directly from Kualitee.
 Now you can execute the playwright cycle from Kualitee.
+
 
 **Note:** If you are using a package version earlier than **2.0.0**, only **Node.js** version **18.16.0** is supported.
