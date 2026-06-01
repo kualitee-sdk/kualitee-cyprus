@@ -223,13 +223,14 @@ Now you can execute the _Scenario_ from Kualitee tool.
 > [!TIP]
 > On finishing the setup in **Cypress** only integration part of **Kualitee** you need to do. [Click here for integration part in Kualitee](https://medium.com/@yaseennasri8/streamlining-the-testing-process-with-cypress-cucumber-integration-in-kualitee-bb47584948ba)
 
-# Integration with PlayWright
+# Integration with Playwright
 Run your Playwright Cucumber tests from Kualitee and manage your automated test reports in one place.
 ### Step 1: Set up  your playwright project
 Setup your playwright project.
 ### Step 2: Specify Configurations
 Specify reporters programmatically in the configuration file `playwright.config.ts` in native playwright. 
 ![image](https://github.com/kualitee-sdk/kualitee-cyprus/assets/48677205/15a85a1d-4d39-4186-96ba-9324cad7655f)
+
 If you are using Cucumber + Playwright then configure `cucumber.js` and place it root of your project.
 ### Step 3: Set up a server to communicate from Kualitee
 By adding the following express code snipet in your `index.js` file on root directory of your *playwright project* you can execute a cycle with a single click. 
