@@ -19,10 +19,13 @@ export const runSequentiallyByTags = async (body: any): Promise<any[]> => {
         // 1. Generate unique dynamic path for this iteration
         const uniqueReportName = `report_${tc.tc_tag}_${Date.now()}.json`;
         const tempReportPath = path.join(process.cwd(), uniqueReportName);
+        const configs = body.configs;
 
         // 2. FIXED: Feed the unique file path directly into the cucumber-js formatter option
-        const command = `npx cucumber-js --tags "${tc.tc_tag}" --format json:"${tempReportPath}"`;
-        
+        // const command = `npx cucumber-js --tags "${tc.tc_tag}" --format json:"${tempReportPath}"`;
+        const command = `cross-env BASE_URL=${configs.app_url} COMPONENT=${configs.platform} BROWSER=${configs.browser} HEADLESS=${configs.display_mode} npx cucumber-js --tags "${tc.tc_tag}" --format json:"${tempReportPath}"`;
+
+
         try {
             // Execute the specific tag
             await runCommand(command);
@@ -33,7 +36,7 @@ export const runSequentiallyByTags = async (body: any): Promise<any[]> => {
                 const parsedJson = JSON.parse(fileContent);
 
                 await postSingleReportToKualitee(parsedJson, body, tc);
-                
+
                 executionSummary.push({ tag: tc.tc_tag, name: tc.tc_name, status: "Success" });
             } else {
                 throw new Error(`Report file was not generated for tag: ${tc.tc_tag}`);
