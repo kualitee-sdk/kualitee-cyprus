@@ -7,6 +7,7 @@ This package is for [Kualitee](https://www.kualitee.com/) users.
   * Integration kualitee with cypress, execute the scenario from kualitee and update the status of test case.
 * **Integration with [Playwright](https://playwright.dev/)**
   * Run Playwright tests from Kualitee and get reports on one place.
+  * Support for asynchronous, non-blocking Playwright Cucumber cycle execution tracking.
 
 ## Table of Contents
 - [Installation](#npm)
@@ -16,7 +17,8 @@ This package is for [Kualitee](https://www.kualitee.com/) users.
     - [Using Kualitee Tool (Approach 2)](#using-kualitee-tool-approach-2)
   - [Execute scenario from kualitee and update the status](#execute-scenario-from-kualitee-and-update-the-status)
 - [Integration with Playwright](#integration-with-playwright)
-  - [Post Playwright report to Kualitee](#integration-with-playwright)
+  - [Standard Playwright Report Sync (Approach 1)](#integration-with-playwright)
+  - [Asynchronous Cucumber Cycle Execution (Approach 2)](#integration-with-playwright)
 
 
 
@@ -221,12 +223,15 @@ Now you can execute the _Scenario_ from Kualitee tool.
 > [!TIP]
 > On finishing the setup in **Cypress** only integration part of **Kualitee** you need to do. [Click here for integration part in Kualitee](https://medium.com/@yaseennasri8/streamlining-the-testing-process-with-cypress-cucumber-integration-in-kualitee-bb47584948ba)
 
-# Integration with PlayWright
+# Integration with Playwright
+Run your Playwright Cucumber tests from Kualitee and manage your automated test reports in one place.
 ### Step 1: Set up  your playwright project
 Setup your playwright project.
-### Step 2: Specify Reporter
-Specify reporters programmatically in the configuration file `playwright.config.ts`.
+### Step 2: Specify Configurations
+Specify reporters programmatically in the configuration file `playwright.config.ts` in native playwright. 
 ![image](https://github.com/kualitee-sdk/kualitee-cyprus/assets/48677205/15a85a1d-4d39-4186-96ba-9324cad7655f)
+
+If you are using Cucumber + Playwright then configure `cucumber.js` and place it root of your project.
 ### Step 3: Set up a server to communicate from Kualitee
 By adding the following express code snipet in your `index.js` file on root directory of your *playwright project* you can execute a cycle with a single click. 
 > [!IMPORTANT]
@@ -279,6 +284,12 @@ Now your server configured, just hit the command `node index.js` in terminal and
  
 **Where:** `http://localhost` is your server base URL `3000:` is port number and `run-test:` is end point.
 
+## Standard Playwright Report Sync (Approach 1)
+Execute your test suites using from Kualitee and manage your automated test reports in one place.
+
+## Asynchronous Cucumber Cycle Execution (Approach 2) ✨ New Feature
+This feature allows you to trigger test cycles containing sequential, tag-targeted Cucumber scenarios directly from Kualitee.
 Now you can execute the playwright cycle from Kualitee.
+
 
 **Note:** If you are using a package version earlier than **2.0.0**, only **Node.js** version **18.16.0** is supported.
