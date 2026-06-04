@@ -23,8 +23,23 @@ export const runSequentiallyByTags = async (body: any): Promise<any[]> => {
 
         // 2. FIXED: Feed the unique file path directly into the cucumber-js formatter option
         // const command = `npx cucumber-js --tags "${tc.tc_tag}" --format json:"${tempReportPath}"`;
-        const command = `cross-env BASE_URL=${configs.app_url} COMPONENT=${configs.platform} BROWSER=${configs.browser} HEADLESS=${configs.display_mode} npx cucumber-js --tags "${tc.tc_tag}" --format json:"${tempReportPath}"`;
+        // const command = `cross-env BASE_URL=${configs.app_url} COMPONENT=${configs.platform} BROWSER=${configs.browser} HEADLESS=${configs.display_mode} npx cucumber-js --tags "${tc.tc_tag}" --format json:"${tempReportPath}"`;
+        const envConfig = {
+            BASE_URL: configs?.app_url,
+            COMPONENT: configs?.platform,
+            BROWSER: configs?.browser,
+            HEADLESS: configs?.display_mode
+        };
 
+        // 2. Filter out null/undefined values and map them into "KEY=value" strings
+        const envString = Object.entries(envConfig)
+            .filter(([_, value]) => value !== null && value !== undefined)
+            .map(([key, value]) => `${key}=${value}`)
+            .join(' ');
+
+        // 3. Construct your final command dynamically
+        const prefix = envString ? `cross-env ${envString}` : '';
+        const command = `${prefix} npx cucumber-js --tags "${tc.tc_tag}" --format json:"${tempReportPath}"`.trim();
 
         try {
             // Execute the specific tag
