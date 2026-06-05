@@ -32,7 +32,9 @@ export function updateStatusOnKualitee(reportPath: string, body: any) {
             fileForm.append('report', fs.createReadStream(filePath));
             const promise = axios.post(endPoint, fileForm, {
               headers: {
-                'content-type': 'multipart/form-data'
+                'content-type': 'multipart/form-data',
+                'Token': `${body.token}`,
+                'user-agent':`Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36`
               }
             }).then(response => response.data);
 

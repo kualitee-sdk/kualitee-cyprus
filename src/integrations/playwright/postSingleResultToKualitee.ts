@@ -56,7 +56,11 @@ export const postSingleReportToKualitee = async (jsonReport: any, body: any, cur
 
     try {
         const response = await axios.post(endPoint, fileForm, {
-            headers: { "content-type": "multipart/form-data" }
+            headers: { 
+                "content-type": "multipart/form-data",
+                'Token': `${body.token}`,
+                'user-agent':`Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36`
+             }
         });
         console.log(`[Kualitee Sync] Successfully updated test case: ${currentTestCase.tc_tag}`);
         return response.data;
