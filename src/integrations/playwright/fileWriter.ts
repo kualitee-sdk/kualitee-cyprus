@@ -12,23 +12,23 @@ export const writeFilesFromAttachments = async (payload: any): Promise<void> => 
     const attachmentsToProcess: Attachment[] = [];
 
     // 1. Collect feature files if they exist
-    if (payload.feature?.attachments && payload.feature?.target_path) {
-        for (const file of payload.feature.attachments) {
+    if (payload.feature_files && payload.featureFile_path) {
+        for (const file of payload.feature_files) {
             attachmentsToProcess.push({
                 file_name: file.file_name,
                 signed_url: file.signed_url,
-                target_path: path.join(payload.feature.target_path, file.file_name)
+                target_path: path.join(payload.featureFile_path, file.file_name)
             });
         }
     }
 
     // 2. Collect step definition files if they exist
-    if (payload.step_definitions?.attachments && payload.step_definitions?.target_path) {
-        for (const file of payload.step_definitions.attachments) {
+    if (payload.step_definitions && payload.stepDef_path) {
+        for (const file of payload.step_definitions) {
             attachmentsToProcess.push({
                 file_name: file.file_name,
                 signed_url: file.signed_url,
-                target_path: path.join(payload.step_definitions.target_path, file.file_name)
+                target_path: path.join(payload.stepDef_path, file.file_name)
             });
         }
     }
