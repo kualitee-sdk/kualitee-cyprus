@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { spawn } from "child_process";
 import { postPlaywrightReportOnKualitee } from "./postPlaywrightReportOnKualitee";
 import { runSequentiallyByTags } from "./playwrightCucumberTagRunner";
+import { writeFilesFromAttachments } from "./fileWriter";
 
 let isExecutionRunning = false;
 
@@ -38,7 +39,7 @@ export const playwrightToKualitee = async (
                 })
                 .finally(() => {
                     // Always release the lock when background execution completely concludes
-                    isExecutionRunning = false; 
+                    isExecutionRunning = false;
                 });
 
             // Instantly respond back to the client without waiting for tests
@@ -46,6 +47,27 @@ export const playwrightToKualitee = async (
                 status: true,
                 message: "Execution started successfully."
             });
+        }
+
+        // 3.5 File writing phase (NEW)
+        if (req.body?.is_file_write === true) {
+            try {
+                console.log("\n[File Write] File Creation Started. Processing features and step definitions...");
+
+                // Simply pass the entire req.body to the helper
+                await writeFilesFromAttachments(req.body);
+
+                return res.status(200).send({
+                    status: true,
+                    message: "Features and step definitions created successfully."
+                });
+            } catch (error: any) {
+                console.error("[File Write Error] Failed to write files:", error);
+                return res.status(500).send({
+                    status: false,
+                    message: error.message || "Failed to process and write files."
+                });
+            }
         }
 
         isExecutionRunning = true; // 🔒 lock execution
