@@ -1,4 +1,5 @@
 import axios from "axios";
+import { cancelCucumberKualiteeExecution } from "../helper/helper";
 
 export const postSingleReportToKualitee = async (jsonReport: any, body: any, currentTestCase: any): Promise<void> => {
     const base_url = body.base_URL;
@@ -56,16 +57,17 @@ export const postSingleReportToKualitee = async (jsonReport: any, body: any, cur
 
     try {
         const response = await axios.post(endPoint, fileForm, {
-            headers: { 
+            headers: {
                 "content-type": "multipart/form-data",
                 'Token': `${body.token}`,
-                'user-agent':`Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36`
-             }
+                'user-agent': `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36`
+            }
         });
         console.log(`[Kualitee Sync] Successfully updated test case: ${currentTestCase.tc_tag}`);
         return response.data;
     } catch (error: any) {
         console.error(`[Axios Exception] Failed sending to Kualitee for case ${currentTestCase.tc_tag}:`, error.data);
+        await cancelCucumberKualiteeExecution(body);
         throw error;
     }
 };

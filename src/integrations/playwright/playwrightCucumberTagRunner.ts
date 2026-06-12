@@ -2,6 +2,7 @@ import { spawn } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import { postSingleReportToKualitee } from "./postSingleResultToKualitee";
+import { cancelCucumberKualiteeExecution } from "../helper/helper";
 
 interface TestCasePayload {
     tc_tag: string;
@@ -60,6 +61,8 @@ export const runSequentiallyByTags = async (body: any): Promise<any[]> => {
         } catch (error: any) {
             console.error(`[Error] Failed processing tag ${tc.tc_tag}:`, error.message);
             executionSummary.push({ tag: tc.tc_tag, name: tc.tc_name, status: "Failed", error: error.message });
+            await cancelCucumberKualiteeExecution(body);
+
         } finally {
             // Self-cleaning hook
             if (fs.existsSync(tempReportPath)) {
