@@ -33,7 +33,18 @@ export const writeFilesFromAttachments = async (payload: any): Promise<void> => 
         }
     }
 
-    // 3. Run your original, preferred download loop
+    // 3. Collect page files if they exist
+    if (payload.page && payload.page_path) {
+        for (const file of payload.page) {
+            attachmentsToProcess.push({
+                file_name: file.file_name,
+                signed_url: file.signed_url,
+                target_path: path.join(payload.page_path, file.file_name)
+            });
+        }
+    }
+
+    // 4. Run your original, preferred download loop
     for (const attachment of attachmentsToProcess) {
         const { file_name, signed_url, target_path } = attachment;
 
